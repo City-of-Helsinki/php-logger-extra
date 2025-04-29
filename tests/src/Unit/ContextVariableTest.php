@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace LoggerExtra\Tests;
+namespace LoggerExtra\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;

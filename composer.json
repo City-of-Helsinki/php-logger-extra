@@ -31,7 +31,7 @@
 	},
     "autoload-dev": {
         "psr-4": {
-            "LoggerExtra\\Tests\\": "test/src/"
+            "LoggerExtra\\Tests\\": "tests/src/"
         }
     }
 }

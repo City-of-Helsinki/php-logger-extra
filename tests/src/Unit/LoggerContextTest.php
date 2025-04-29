@@ -2,67 +2,68 @@
 
 declare(strict_types=1);
 
-namespace LoggerExtra\Tests;
+namespace LoggerExtra\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 use LoggerExtra\LoggerContext;
+use LoggerExtra\Tests\Mock\TestableLoggerContext;
 
 /**
  * Tests that the logger context is behaving as expected.
  * @group logger_context
  */
 #[CoversClass(LoggerContext::class)]
- class LoggerContextTest extends TestCase {
+class LoggerContextTest extends TestCase {
   public function setUp(): void {
     parent::setUp();
-    LoggerContext::initialize(); 
+    TestableLoggerContext::initialize(); 
   }
 
   public function tearDown(): void {
     parent::tearDown();
-    LoggerContext::uninitialize();
+    TestableLoggerContext::uninitialize();
   }
 
   public function testCapture() {
     $key1 = "key1";
     $value1 = "foo";
 
-    LoggerContext::capture([$key1 => $value1], function () use ($key1, $value1) {
+    TestableLoggerContext::use([$key1 => $value1], function () use ($key1, $value1) {
       $this->assertEquals([
         $key1 => $value1
-      ], LoggerContext::get());
+      ], TestableLoggerContext::get());
       
       $key2 = "key2";
       $value2 = "bar";
 
-      LoggerContext::capture([$key2 => $value2], function () use ($key1, $key2, $value1, $value2) {
+      TestableLoggerContext::use([$key2 => $value2], function () use ($key1, $key2, $value1, $value2) {
         $this->assertEquals([
           $key1 => $value1,
           $key2 => $value2
-        ], LoggerContext::get());
+        ], TestableLoggerContext::get());
         
         $key3 = "key3";
         $value3 = "baz";
 
-        LoggerContext::capture([$key3 => $value3], function () use ($key1, $key2, $key3, $value1, $value2, $value3) {
+        TestableLoggerContext::use([$key3 => $value3], function () use ($key1, $key2, $key3, $value1, $value2, $value3) {
           $this->assertEquals([
             $key1 => $value1,
             $key2 => $value2,
             $key3 => $value3
-          ], LoggerContext::get());
+          ], TestableLoggerContext::get());
         });
 
         $this->assertEquals([
           $key1 => $value1,
           $key2 => $value2
-        ], LoggerContext::get());
+        ], TestableLoggerContext::get());
       });
 
       $this->assertEquals([
         $key1 => $value1
-      ], LoggerContext::get());
+      ], TestableLoggerContext::get());
     });
   }
 }
