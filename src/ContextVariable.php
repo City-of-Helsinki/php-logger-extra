@@ -4,95 +4,65 @@ declare(strict_types=1);
 
 namespace LoggerExtra;
 
-class ContextVariableState {
-    public string $token;
-    public mixed $data;
-    public int $position;
+class ContextVariableToken {
+    public readonly string $owner;
+    public readonly mixed $oldValue;
 
-    function __construct($data, $position) {
-        $this->token = bin2hex(openssl_random_pseudo_bytes(16));
-        $this->data = $data;
-        $this->position = $position;
+    function __construct(string $owner, mixed $oldValue) {
+        $this->owner = $owner;
+        $this->oldValue = $oldValue;
     }
 }
 
 class ContextVariable {
-    private string $name;
-    private mixed $default;
-    private int $position;
-
-    /** @var ContextVariableState[] $states */
-    private array $states;
+    private readonly string $identity;
+    private readonly string $name;
+    private readonly mixed $default;
+    private mixed $value;
 
     /** Sentinel value for object being undefined instead of null that can be valid value. */
     private const UNDEFINED = '__UNDEFINED__';
 
     function __construct(string $name, mixed $default = self::UNDEFINED) {
+        $this->identity = bin2hex(openssl_random_pseudo_bytes(32));
         $this->name = $name;
         $this->default = $default;
-        $this->position = -1;
-        $this->states = [];
+        $this->value = self::UNDEFINED;
     }
 
-    public function set(mixed $value): string {
-        $this->position = sizeof($this->states);
-        $state = new ContextVariableState($value, $this->position);
-        array_push($this->states, $state);
-        return $state->token;
+    public function set(mixed $value): ContextVariableToken {
+        $token = new ContextVariableToken($this->identity, $this->value);
+        $this->value = $value;
+        return $token;
     }
 
     public function get(mixed $default = self::UNDEFINED): mixed {
-        if (array_key_exists($this->position, $this->states)) {
-            return $this->states[$this->position]->data;
+        if (self::isDefined($this->value)) {
+            return $this->value;
         }
 
-        $default = self::valueOrFallback($default, $this->default);
-
-        if (!self::isDefined($default)) {
-          throw new \Exception(sprintf("ContextVariable %s does not have any value", $this->name));
+        if (self::isDefined($default)) {
+            return $default;
         }
 
-        return $default;
+        if (self::isDefined($this->default)) {
+            return $this->default;
+        }
+
+        throw new \Exception(sprintf("ContextVariable %s does not have any value", $this->name));
     }
 
-    public function reset(string $token): void {
-        /** @var ?ContextVariableState $state */
-        $state = $this->find($token);
-
-        if (!isset($state)) {
-            throw new \Exception(sprintf("ContextVariable %s does not have any token %s", $this->name, $token));
+    public function reset(ContextVariableToken $token): void {
+        if ($token->owner !== $this->identity) {
+            throw new \Exception(sprintf("Provided token was created in another context"));
         }
 
-        $this->position = $state->position - 1;
-        $this->states = array_slice($this->states, 0, $state->position, true);
-    }
-
-    private function find(string $token): ?ContextVariableState {
-        $size = count($this->states);
-
-        // Iterate the array backwards, most likely the user is looking for last entry
-        for ($i = $size - 1; $i >= 0; $i--) {
-            $state = $this->states[$i];
-            
-            if ($state->token === $token) {
-                return $state;
-            }
-        }
-
-        return null;
-    }
-
-    private static function valueOrFallback(mixed $value, mixed $fallback): mixed {
-        if (self::isDefined($value)) {
-            return $value;
-        }
-
-        return $fallback;
+        $this->value = $token->oldValue;
     }
 
     private static function isDefined($value): bool {
         return ($value !== self::UNDEFINED);
-      }
+    }
 }
 
 ?>
