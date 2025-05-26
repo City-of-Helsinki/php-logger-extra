@@ -17,22 +17,26 @@ class RequestIdMiddleware implements HttpKernelInterface {
    */
   public function __construct(
     protected HttpKernelInterface $app
-  ) {}
+  ) {
+  }
 
   /**
    * {@inheritdoc}
    */
-  public function handle(Request $request, $type = HttpKernelInterface::MAIN_REQUEST, $catch = TRUE): Response {
-    $requestId = $request->headers->get('X-Request-ID', $this->uuid_v4());
+  public function handle(Request $request, $type = HttpKernelInterface::MAIN_REQUEST, $catch = true): Response {
+    $requestId = $request->headers->get('X-Request-ID', $this->generateId());
     $context = ["request_id" => $requestId];
-    
+
     $response = LoggerContext::use($context, fn() => $this->app->handle($request, $type, $catch));
     $response->headers->set('X-Request-ID', $requestId);
 
     return $response;
   }
 
-  private function uuid_v4(): string {
+  /**
+   * Generates UUIDv4 style random ID.
+   */
+  private function generateId(): string {
     $data = random_bytes(16);
     $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
     $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10

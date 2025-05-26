@@ -6,7 +6,6 @@ namespace LoggerExtra\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-
 use LoggerExtra\LoggerContext;
 use LoggerExtra\Tests\Mock\TestableLoggerContext;
 
@@ -18,7 +17,7 @@ use LoggerExtra\Tests\Mock\TestableLoggerContext;
 class LoggerContextTest extends TestCase {
   public function setUp(): void {
     parent::setUp();
-    TestableLoggerContext::initialize(); 
+    TestableLoggerContext::initialize();
   }
 
   public function tearDown(): void {
@@ -34,7 +33,7 @@ class LoggerContextTest extends TestCase {
       $this->assertEquals([
         $key1 => $value1
       ], TestableLoggerContext::get());
-      
+
       $key2 = "key2";
       $value2 = "bar";
 
@@ -43,7 +42,7 @@ class LoggerContextTest extends TestCase {
           $key1 => $value1,
           $key2 => $value2
         ], TestableLoggerContext::get());
-        
+
         $key3 = "key3";
         $value3 = "baz";
 
@@ -67,5 +66,3 @@ class LoggerContextTest extends TestCase {
     });
   }
 }
-
-?>

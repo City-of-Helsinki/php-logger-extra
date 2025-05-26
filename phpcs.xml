@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="Library">
+
+  <arg name="extensions" value="php,module,install,theme,inc"/>
+
+  <rule ref="PSR1" />
+
+  <file>src</file>
+  <file>tests</file>
+
+</ruleset>

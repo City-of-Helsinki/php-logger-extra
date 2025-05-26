@@ -7,12 +7,12 @@ namespace LoggerExtra;
 use LoggerExtra\ContextVariable;
 
 class LoggerContext {
-  private static ?ContextVariable $_ctx = null;
+  private static ?ContextVariable $ctx = null;
 
   /**
    * Captures given context and calls the passed function with
    * given context merged with previously active one.
-   * 
+   *
    * @template T
    * @param callable(): T $fn
    *   Function to be called with merged logger context.
@@ -20,7 +20,7 @@ class LoggerContext {
    *   Variables to be merged into logger context
    * @return T Return value of the called function.
    */
-  static function use(array $data, callable $fn): mixed {
+  public static function use(array $data, callable $fn): mixed {
     /** @var ?string $token */
     $token = null;
 
@@ -37,7 +37,7 @@ class LoggerContext {
   /**
    * Returns the active logger context.
    */
-  static function get(): array {
+  public static function get(): array {
     $ctx = self::initialize();
     return $ctx->get([]);
   }
@@ -46,19 +46,17 @@ class LoggerContext {
    * Initializes the static context variable instance.
    */
   protected static function initialize(): ContextVariable {
-    if (self::$_ctx === null) {
-      self::$_ctx = new ContextVariable("LoggerContext", []);
+    if (self::$ctx === null) {
+      self::$ctx = new ContextVariable("LoggerContext", []);
     }
-  
-    return self::$_ctx;
+
+    return self::$ctx;
   }
-  
+
   /**
    * Clears the static context variable instance.
    */
   protected static function uninitialize(): void {
-    self::$_ctx = null;
+    self::$ctx = null;
   }
 }
-
-?>

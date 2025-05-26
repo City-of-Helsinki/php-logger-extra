@@ -43,7 +43,7 @@ class MockRoutes {
         LoggerContext::use($ctx, function () use ($logger) {
           $logger->info("Polly wants a cookie!");
         });
-        
+
         return new JsonResponse($ctx);
       }
     ]));

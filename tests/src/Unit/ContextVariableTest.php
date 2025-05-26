@@ -6,7 +6,6 @@ namespace LoggerExtra\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-
 use LoggerExtra\ContextVariable;
 
 /**
@@ -61,5 +60,3 @@ class ContextVariableTest extends TestCase {
     $this->assertEquals(null, $this->ctx->get(null));
   }
 }
-
-?>

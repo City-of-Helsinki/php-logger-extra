@@ -11,13 +11,11 @@ use LoggerExtra\LoggerContext;
  * Make the initialize and uninitialize calls public for testing purposes.
  */
 class TestableLoggerContext extends LoggerContext {
-  static function initialize(): ContextVariable {
+  public static function initialize(): ContextVariable {
     return parent::initialize();
   }
-  
-  static function uninitialize(): void {
+
+  public static function uninitialize(): void {
     parent::uninitialize();
   }
 }
-
-?>

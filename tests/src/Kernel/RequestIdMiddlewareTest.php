@@ -7,10 +7,8 @@ namespace LoggerExtra\Tests\Kernel;
 use LoggerExtra\LoggerContextProcessor;
 use LoggerExtra\RequestIdMiddleware;
 use LoggerExtra\Tests\Mock\MockRoutes;
-
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
-
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -21,7 +19,6 @@ use Symfony\Component\HttpKernel\EventListener\ErrorListener;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
-
 use Monolog\Logger;
 use Monolog\Handler\TestHandler;
 
@@ -60,7 +57,7 @@ class RequestIdMiddlewareTest extends TestCase {
 
   public function tearDown(): void {
   }
-  
+
   public function testGenerateRequestIdIfNotSet() {
     $middleware = new RequestIdMiddleware($this->kernel);
     $request = Request::create("/hello");
@@ -68,7 +65,7 @@ class RequestIdMiddlewareTest extends TestCase {
 
     $records = $this->testHandler->getRecords();
     $this->assertTrue(count($records) === 1);
-    
+
     $record = $records[0];
     $this->assertNotNull($record);
     $this->assertNotNull($record->extra["request_id"]);
@@ -76,10 +73,10 @@ class RequestIdMiddlewareTest extends TestCase {
 
   public function testUseRequestIdFromHeader() {
     $middleware = new RequestIdMiddleware($this->kernel);
-    $request = Request::create("/hello", );
+    $request = Request::create("/hello",);
     $request->headers->set('X-Request-ID', "foo");
     $middleware->handle($request);
-    
+
     $records = $this->testHandler->getRecords();
     $this->assertTrue(count($records) === 1);
 
@@ -88,10 +85,9 @@ class RequestIdMiddlewareTest extends TestCase {
     $this->assertEquals("foo", $record->extra["request_id"]);
   }
 
-
   public function testAddLoggerContextInLogRecord() {
     $middleware = new RequestIdMiddleware($this->kernel);
-    $request = Request::create("/parrot", );
+    $request = Request::create("/parrot",);
     $request->query->set('foo', "bar");
     $middleware->handle($request);
 
@@ -101,7 +97,7 @@ class RequestIdMiddlewareTest extends TestCase {
     $record = $records[0];
     $this->assertNotNull($record);
     $this->assertEquals("bar", $record->extra["foo"]);
-  } 
+  }
 
   public function testRequestIdIsLoggedOnError() {
     $middleware = new RequestIdMiddleware($this->kernel);
@@ -113,7 +109,7 @@ class RequestIdMiddlewareTest extends TestCase {
 
     $records = $this->testHandler->getRecords();
     $this->assertTrue(count($records) === 1);
-    
+
     $record = $records[0];
     $this->assertNotNull($record);
     $this->assertEquals("foo", $record->extra["request_id"]);
