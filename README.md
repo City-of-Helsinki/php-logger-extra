@@ -16,7 +16,7 @@ To install this package using Composer, first add the repository to your `compos
   ...,
   {
     "type": "vcs",
-    "url": "https://github.com/City-of-Helsinki/php-resilient-logger.git"
+    "url": "https://github.com/City-of-Helsinki/php-logger-extra.git"
   }
 ]
 ```
@@ -24,7 +24,7 @@ To install this package using Composer, first add the repository to your `compos
 Then install the package:
 
 ```bash
-composer require city-of-helsinki/php-resilient-logger
+composer require city-of-helsinki/php-logger-extra
 ```
 
 ---
