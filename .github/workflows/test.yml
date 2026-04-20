@@ -1,0 +1,42 @@
+name: Tests
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: false
+            matrix:
+                php-versions: ['8.4']
+        steps:
+
+            - name: Checkout code
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+            - name: Setup PHP with composer v2
+              uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # 2.37.0
+              with:
+                  php-version: '${{ matrix.php-versions }}'
+                  coverage: pcov
+                  tools: composer:v2
+
+            - name: Validate composer.json
+              run: composer validate
+
+            - name: Install Composer dependencies
+              run: composer install --no-progress
+
+            - name: Run phpcs
+              run: vendor/bin/phpcs
+
+            # todo: enable
+            #- name: Run phpstan
+            #  run: vendor/bin/phpstan analyze --no-progress
+
+            # todo: Enable code coverage
+            - name: Run PHPUnit tests
+              run: |
+                  set -o pipefail && vendor/bin/phpunit
