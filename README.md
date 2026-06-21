@@ -173,7 +173,7 @@ composer install
 
 ## Code Formatting
 
-This project uses [PHP_CodeSniffer (phpcs)](https://github.com/squizlabs/PHP_CodeSniffer) for formatting and code quality checks.
+This project uses [PHP_CodeSniffer (phpcs)](https://github.com/PHPCSStandards/PHP_CodeSniffer) for formatting and code quality checks.
 
 Common commands:
 
