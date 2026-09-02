@@ -25,7 +25,7 @@ class LoggerContext {
     $merged = array_merge($ctx->get([]), $data);
     // The guard restores $ctx to its previous value once it is destroyed,
     // which PHP guarantees on scope exit even if $fn() throws.
-    $guard = new ContextVariableResetGuard($ctx, $ctx->set($merged));
+    $guard = new ContextVariableResetGuard($ctx, $ctx->set($merged)); // NOSONAR
     return $fn();
   }
 
