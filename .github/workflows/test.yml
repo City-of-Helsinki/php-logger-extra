@@ -35,7 +35,6 @@ jobs:
             - name: Run phpstan
               run: vendor/bin/phpstan analyze --no-progress
 
-            # todo: Enable code coverage
             - name: Run PHPUnit tests
               run: |
-                  set -o pipefail && vendor/bin/phpunit
+                  set -o pipefail && vendor/bin/phpunit --coverage-clover=coverage.xml
