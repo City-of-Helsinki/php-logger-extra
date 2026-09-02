@@ -65,4 +65,34 @@ class LoggerContextTest extends TestCase {
       ], TestableLoggerContext::get());
     });
   }
+
+  public function testContextIsRestoredWhenCallbackThrows() {
+    $key1 = "key1";
+    $value1 = "foo";
+
+    TestableLoggerContext::use([$key1 => $value1], function () use ($key1, $value1) {
+      $this->assertEquals([
+        $key1 => $value1
+      ], TestableLoggerContext::get());
+
+      $key2 = "key2";
+      $value2 = "bar";
+
+      try {
+        TestableLoggerContext::use([$key2 => $value2], function () {
+          throw new \RuntimeException("boom");
+        });
+        $this->fail("Expected exception was not thrown.");
+      }
+      catch (\RuntimeException $e) {
+        $this->assertEquals("boom", $e->getMessage());
+      }
+
+      // The context set by the throwing call must be restored, even though
+      // it was never returned normally.
+      $this->assertEquals([
+        $key1 => $value1
+      ], TestableLoggerContext::get());
+    });
+  }
 }

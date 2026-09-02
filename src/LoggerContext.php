@@ -16,26 +16,23 @@ class LoggerContext {
    * @template T
    * @param callable(): T $fn
    *   Function to be called with merged logger context.
-   * @param array $data
+   * @param array<mixed> $data
    *   Variables to be merged into logger context
    * @return T Return value of the called function.
    */
   public static function use(array $data, callable $fn): mixed {
-    /** @var ?string $token */
-    $token = null;
-
-    try {
-      $ctx = self::initialize();
-      $merged = array_merge($ctx->get([]), $data);
-      $token = $ctx->set($merged);
-      return $fn();
-    } finally {
-      $ctx->reset($token);
-    }
+    $ctx = self::initialize();
+    $merged = array_merge($ctx->get([]), $data);
+    // The guard restores $ctx to its previous value once it is destroyed,
+    // which PHP guarantees on scope exit even if $fn() throws.
+    $guard = new ContextVariableResetGuard($ctx, $ctx->set($merged));
+    return $fn();
   }
 
   /**
    * Returns the active logger context.
+   *
+   * @return array<mixed>
    */
   public static function get(): array {
     $ctx = self::initialize();

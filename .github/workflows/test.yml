@@ -32,9 +32,8 @@ jobs:
             - name: Run phpcs
               run: vendor/bin/phpcs
 
-            # todo: enable
-            #- name: Run phpstan
-            #  run: vendor/bin/phpstan analyze --no-progress
+            - name: Run phpstan
+              run: vendor/bin/phpstan analyze --no-progress
 
             # todo: Enable code coverage
             - name: Run PHPUnit tests
