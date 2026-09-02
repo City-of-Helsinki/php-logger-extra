@@ -1,0 +1,9 @@
+parameters:
+  fileExtensions:
+      - php
+  paths:
+    - ./src
+  excludePaths:
+    - vendor (?)
+  level: 7
+  treatPhpDocTypesAsCertain: false

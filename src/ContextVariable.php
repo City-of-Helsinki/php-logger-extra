@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace LoggerExtra;
 
-use LoggerExtra\ContextVariableToken;
-
 class ContextVariable {
+
   private readonly string $identity;
   private readonly string $name;
   private readonly mixed $default;
@@ -46,12 +45,15 @@ class ContextVariable {
 
   public function reset(ContextVariableToken $token): void {
     if ($token->owner !== $this->identity) {
-      throw new \Exception(sprintf("Provided token was created in another context"));
+      throw new \Exception("Provided token was created in another context");
     }
 
     $this->value = $token->oldValue;
   }
 
+  /**
+   * @param mixed $value
+   */
   private static function isDefined($value): bool {
     return ($value !== self::UNDEFINED);
   }

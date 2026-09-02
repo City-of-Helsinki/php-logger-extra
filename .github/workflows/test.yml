@@ -10,7 +10,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                php-versions: ['8.4']
+                php-versions: ['8.4', '8.5']
         steps:
 
             - name: Checkout code
@@ -32,11 +32,9 @@ jobs:
             - name: Run phpcs
               run: vendor/bin/phpcs
 
-            # todo: enable
-            #- name: Run phpstan
-            #  run: vendor/bin/phpstan analyze --no-progress
+            - name: Run phpstan
+              run: vendor/bin/phpstan analyze --no-progress
 
-            # todo: Enable code coverage
             - name: Run PHPUnit tests
               run: |
-                  set -o pipefail && vendor/bin/phpunit
+                  set -o pipefail && vendor/bin/phpunit --coverage-clover=coverage.xml
